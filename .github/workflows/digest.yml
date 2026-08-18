@@ -23,7 +23,11 @@ jobs:
           import subprocess
 
           summary_path = os.environ["GITHUB_STEP_SUMMARY"]
-          files = sorted(glob.glob("assessments/*.json"))
+          files = sorted(
+              path
+              for path in glob.glob("assessments/*.json")
+              if not os.path.basename(path).startswith("ecosystem_")
+          )
 
           if not files:
               with open(summary_path, "a") as out:
