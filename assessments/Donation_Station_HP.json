@@ -1,0 +1,19 @@
+{
+  "organization": "Donation Station HP",
+  "founding_date": "2018-06-04",
+  "timestamp": "2026-08-17T00:00:00Z",
+  "aggregate_score": 7.42,
+  "aggregate_level": "Stable",
+  "dimensions": [
+    {"position": 0, "name": "ORIGIN", "scores": [7.0, 7.5, 7.0], "average": 7.17, "level": "Stable"},
+    {"position": 1, "name": "KNOWLEDGE", "scores": [8.0, 8.5, 9.0], "average": 8.5, "level": "Optimal"},
+    {"position": 2, "name": "WISDOM", "scores": [7.0, 7.0, 6.5], "average": 6.83, "level": "Stable"},
+    {"position": 3, "name": "UNDERSTANDING", "scores": [8.0, 7.5, 8.0], "average": 7.83, "level": "Stable"},
+    {"position": 4, "name": "CULTURED FREEDOM", "scores": [6.5, 7.0, 6.0], "average": 6.5, "level": "Stable"},
+    {"position": 5, "name": "POWER", "scores": [5.5, 6.0, 5.5], "average": 5.67, "level": "Watch"},
+    {"position": 6, "name": "EQUALITY", "scores": [8.5, 9.0, 8.5], "average": 8.67, "level": "Optimal"},
+    {"position": 7, "name": "CONSCIOUSNESS", "scores": [7.5, 8.0, 7.5], "average": 7.67, "level": "Stable"},
+    {"position": 8, "name": "BUILD/DESTROY", "scores": [6.0, 6.5, 6.0], "average": 6.17, "level": "Watch"},
+    {"position": 9, "name": "BORN", "scores": [8.5, 9.0, 9.0], "average": 8.83, "level": "Optimal"}
+  ]
+}
