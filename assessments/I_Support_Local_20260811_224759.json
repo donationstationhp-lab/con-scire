@@ -1,0 +1,19 @@
+{
+  "organization": "I Support Local",
+  "founding_date": "2024-01-04",
+  "timestamp": "2026-08-11T22:47:59Z",
+  "aggregate_score": 6.80,
+  "aggregate_level": "Stable",
+  "dimensions": [
+    {"position": 0, "name": "ORIGIN", "scores": [6.0, 6.5, 6.0], "average": 6.17, "level": "Stable"},
+    {"position": 1, "name": "KNOWLEDGE", "scores": [7.5, 8.0, 7.5], "average": 7.67, "level": "Stable"},
+    {"position": 2, "name": "WISDOM", "scores": [6.5, 7.0, 6.5], "average": 6.67, "level": "Stable"},
+    {"position": 3, "name": "UNDERSTANDING", "scores": [7.0, 7.5, 7.0], "average": 7.17, "level": "Stable"},
+    {"position": 4, "name": "CULTURED FREEDOM", "scores": [5.5, 6.0, 5.5], "average": 5.67, "level": "Watch"},
+    {"position": 5, "name": "POWER", "scores": [6.0, 6.5, 6.0], "average": 6.17, "level": "Stable"},
+    {"position": 6, "name": "EQUALITY", "scores": [8.0, 8.5, 8.5], "average": 8.33, "level": "Optimal"},
+    {"position": 7, "name": "CONSCIOUSNESS", "scores": [7.0, 7.5, 7.0], "average": 7.17, "level": "Stable"},
+    {"position": 8, "name": "BUILD/DESTROY", "scores": [5.0, 5.5, 5.0], "average": 5.17, "level": "Watch"},
+    {"position": 9, "name": "BORN", "scores": [7.5, 8.0, 8.0], "average": 7.83, "level": "Stable"}
+  ]
+}

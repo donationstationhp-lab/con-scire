@@ -1,0 +1,19 @@
+{
+  "organization": "Communities in Action",
+  "founding_date": "2024-08-19",
+  "timestamp": "2026-08-02T20:22:38Z",
+  "aggregate_score": 8.24,
+  "aggregate_level": "Optimal",
+  "dimensions": [
+    {"position": 0, "name": "ORIGIN", "scores": [7.5, 8.0, 7.5], "average": 7.67, "level": "Stable"},
+    {"position": 1, "name": "KNOWLEDGE", "scores": [9.0, 9.5, 9.0], "average": 9.17, "level": "Optimal"},
+    {"position": 2, "name": "WISDOM", "scores": [8.0, 8.5, 8.0], "average": 8.17, "level": "Optimal"},
+    {"position": 3, "name": "UNDERSTANDING", "scores": [8.5, 9.0, 8.5], "average": 8.67, "level": "Optimal"},
+    {"position": 4, "name": "CULTURED FREEDOM", "scores": [7.0, 7.5, 7.0], "average": 7.17, "level": "Stable"},
+    {"position": 5, "name": "POWER", "scores": [7.5, 8.0, 7.5], "average": 7.67, "level": "Stable"},
+    {"position": 6, "name": "EQUALITY", "scores": [9.0, 9.5, 9.5], "average": 9.33, "level": "Optimal"},
+    {"position": 7, "name": "CONSCIOUSNESS", "scores": [8.0, 8.5, 8.0], "average": 8.17, "level": "Optimal"},
+    {"position": 8, "name": "BUILD/DESTROY", "scores": [7.0, 7.0, 7.5], "average": 7.17, "level": "Stable"},
+    {"position": 9, "name": "BORN", "scores": [9.0, 9.5, 9.0], "average": 9.17, "level": "Optimal"}
+  ]
+}
