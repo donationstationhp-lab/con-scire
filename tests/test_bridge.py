@@ -1,5 +1,7 @@
+import json
 import sys
 import os
+import tempfile
 import unittest
 
 sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
@@ -16,6 +18,7 @@ from bridge import (
     bridge_donor,
     org_born,
     bridge_org,
+    load_assessment,
     BORN_TO_POSITION,
     STAGE_TO_POSITIONS,
 )
@@ -38,6 +41,26 @@ def _make_assessment(scores=None):
             }
             for p in range(10)
         ],
+    }
+
+
+def _make_ecosystem_data(organizations=None):
+    return {
+        "type": "ecosystem",
+        "founding_date": "2024-08-19",
+        "timestamp": "2026-08-11T23:01:39.290507",
+        "organizations": organizations if organizations is not None else ["Org A", "Org B"],
+        "dimensions": [
+            {
+                "position": p,
+                "name": f"DIM_{p}",
+                "average": 9.0,
+                "level": "Mature",
+            }
+            for p in range(10)
+        ],
+        "ecosystem_aggregate": 9.25,
+        "ecosystem_level": "Mature",
     }
 
 
@@ -341,6 +364,63 @@ class TestBridgeOrg(unittest.TestCase):
         reading = bridge_org(self.assessment)
         if reading["born"] is not None:
             self.assertEqual(reading["governing_position"], map_born_to_position(reading["born"]))
+
+
+class TestLoadAssessment(unittest.TestCase):
+    def _write(self, data):
+        f = tempfile.NamedTemporaryFile(mode="w", suffix=".json", delete=False)
+        json.dump(data, f)
+        f.close()
+        self.addCleanup(os.remove, f.name)
+        return f.name
+
+    def test_plain_assessment_passthrough(self):
+        data = _make_assessment()
+        loaded = load_assessment(self._write(data))
+        self.assertEqual(loaded, data)
+        self.assertNotIn("_ecosystem", loaded)
+
+    def test_ecosystem_flagged(self):
+        loaded = load_assessment(self._write(_make_ecosystem_data()))
+        self.assertTrue(loaded.get("_ecosystem"))
+
+    def test_ecosystem_organization_label_lists_orgs(self):
+        loaded = load_assessment(self._write(_make_ecosystem_data()))
+        self.assertEqual(loaded["organization"], "Ecosystem (Org A, Org B)")
+
+    def test_ecosystem_no_organizations_falls_back(self):
+        loaded = load_assessment(self._write(_make_ecosystem_data(organizations=[])))
+        self.assertEqual(loaded["organization"], "Ecosystem")
+
+    def test_ecosystem_aggregate_mapped(self):
+        loaded = load_assessment(self._write(_make_ecosystem_data()))
+        self.assertEqual(loaded["aggregate_score"], 9.25)
+        self.assertEqual(loaded["aggregate_level"], "Mature")
+
+    def test_ecosystem_founding_date_passthrough(self):
+        loaded = load_assessment(self._write(_make_ecosystem_data()))
+        self.assertEqual(loaded["founding_date"], "2024-08-19")
+
+    def test_ecosystem_dimensions_have_scores_triplet(self):
+        loaded = load_assessment(self._write(_make_ecosystem_data()))
+        for d in loaded["dimensions"]:
+            self.assertEqual(d["scores"], [d["average"]] * 3)
+
+    def test_ecosystem_dimensions_all_positions_present(self):
+        loaded = load_assessment(self._write(_make_ecosystem_data()))
+        positions = {d["position"] for d in loaded["dimensions"]}
+        self.assertEqual(positions, set(range(10)))
+
+    def test_ecosystem_compatible_with_get_dim_and_stage_health(self):
+        loaded = load_assessment(self._write(_make_ecosystem_data()))
+        self.assertIsNotNone(get_dim(1, loaded))
+        self.assertTrue(stage_health("intake", loaded))
+
+    def test_ecosystem_compatible_with_bridge_org(self):
+        loaded = load_assessment(self._write(_make_ecosystem_data()))
+        reading = bridge_org(loaded)
+        self.assertIsNotNone(reading["born"])
+        self.assertTrue(reading["organization"].startswith("Ecosystem"))
 
 
 class TestMappingCoverage(unittest.TestCase):
