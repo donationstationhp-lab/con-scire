@@ -1,0 +1,96 @@
+{
+  "type": "ecosystem",
+  "founding_date": "2024-08-19",
+  "timestamp": "2026-08-11T23:01:39.290507",
+  "organization_count": 3,
+  "organizations": [
+    "Communities in Action",
+    "Donation Station HP",
+    "I Support Local"
+  ],
+  "dimensions": [
+    {
+      "position": 0,
+      "name": "CIPHER/COMPLETION",
+      "scores": {"Communities in Action": 10.0, "Donation Station HP": 10.0, "I Support Local": 10.0},
+      "average": 10.0, "min": 10.0, "max": 10.0, "level": "Mature", "uniform": true
+    },
+    {
+      "position": 1,
+      "name": "KNOWLEDGE",
+      "scores": {"Communities in Action": 10.0, "Donation Station HP": 10.0, "I Support Local": 10.0},
+      "average": 10.0, "min": 10.0, "max": 10.0, "level": "Mature", "uniform": true
+    },
+    {
+      "position": 2,
+      "name": "WISDOM",
+      "scores": {"Communities in Action": 10.0, "Donation Station HP": 10.0, "I Support Local": 10.0},
+      "average": 10.0, "min": 10.0, "max": 10.0, "level": "Mature", "uniform": true
+    },
+    {
+      "position": 3,
+      "name": "UNDERSTANDING",
+      "scores": {"Communities in Action": 10.0, "Donation Station HP": 10.0, "I Support Local": 10.0},
+      "average": 10.0, "min": 10.0, "max": 10.0, "level": "Mature", "uniform": true
+    },
+    {
+      "position": 4,
+      "name": "CULTURED FREEDOM",
+      "scores": {"Communities in Action": 10.0, "Donation Station HP": 10.0, "I Support Local": 10.0},
+      "average": 10.0, "min": 10.0, "max": 10.0, "level": "Mature", "uniform": true
+    },
+    {
+      "position": 5,
+      "name": "POWER REFINEMENT",
+      "scores": {"Communities in Action": 10.0, "Donation Station HP": 10.0, "I Support Local": 10.0},
+      "average": 10.0, "min": 10.0, "max": 10.0, "level": "Mature", "uniform": true
+    },
+    {
+      "position": 6,
+      "name": "EQUALITY",
+      "scores": {"Communities in Action": 10.0, "Donation Station HP": 8.33, "I Support Local": 10.0},
+      "average": 9.44, "min": 8.33, "max": 10.0, "level": "Mature", "uniform": false
+    },
+    {
+      "position": 7,
+      "name": "CONSCIOUSNESS",
+      "scores": {"Communities in Action": 10.0, "Donation Station HP": 10.0, "I Support Local": 10.0},
+      "average": 10.0, "min": 10.0, "max": 10.0, "level": "Mature", "uniform": true
+    },
+    {
+      "position": 8,
+      "name": "BUILD/DESTROY",
+      "scores": {"Communities in Action": 10.0, "Donation Station HP": 10.0, "I Support Local": 10.0},
+      "average": 10.0, "min": 10.0, "max": 10.0, "level": "Mature", "uniform": true
+    },
+    {
+      "position": 9,
+      "name": "BORN",
+      "scores": {"Communities in Action": 10.0, "Donation Station HP": 10.0, "I Support Local": 10.0},
+      "average": 10.0, "min": 10.0, "max": 10.0, "level": "Mature", "uniform": true
+    }
+  ],
+  "ecosystem_aggregate": 9.94,
+  "ecosystem_level": "Mature",
+  "shared_vulnerabilities": [
+    {
+      "position": 6,
+      "name": "EQUALITY",
+      "gaps": {"Donation Station HP": 8.33}
+    }
+  ],
+  "relational_map": {
+    "closest": {"orgs": ["Communities in Action", "I Support Local"], "distance": 0.0},
+    "most_divergent": {"orgs": ["Donation Station HP", "I Support Local"], "distance": 1.67},
+    "all_pairs": [
+      {"orgs": ["Communities in Action", "I Support Local"], "distance": 0.0},
+      {"orgs": ["Communities in Action", "Donation Station HP"], "distance": 1.67},
+      {"orgs": ["Donation Station HP", "I Support Local"], "distance": 1.67}
+    ]
+  },
+  "source_files": [
+    "assessments/Communities_in_Action_20260802_202238.json",
+    "assessments/Donation_Station_HP_20260811_224113.json",
+    "assessments/I_Support_Local_20260811_224759.json"
+  ]
+}
