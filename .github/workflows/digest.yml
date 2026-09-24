@@ -38,14 +38,26 @@ jobs:
           # Pick the latest assessment per organization, by the assessment's
           # own timestamp field (file mtimes are unreliable after checkout).
           latest_by_org = {}
+          unreadable = []
           for path in files:
-              with open(path) as f:
-                  data = json.load(f)
+              try:
+                  with open(path) as f:
+                      data = json.load(f)
+              except (OSError, json.JSONDecodeError) as exc:
+                  unreadable.append((path, exc))
+                  continue
               org = data.get("organization", "Unknown")
               ts = data.get("timestamp", "")
               if org not in latest_by_org or ts > latest_by_org[org][0]:
                   latest_by_org[org] = (ts, path)
 
+          failed_orgs = []
+          if unreadable:
+              with open(summary_path, "a") as out:
+                  out.write("## Con-Scire Stage Health — assessment file errors\n")
+                  for path, exc in unreadable:
+                      out.write(f"\n⚠️ Could not read `{path}`: {exc}\n")
+                      failed_orgs.append(path)
           with open(summary_path, "a") as out:
               out.write(
                   f"## Con-Scire Stage Health — "
@@ -54,12 +66,26 @@ jobs:
               for org in sorted(latest_by_org):
                   _, path = latest_by_org[org]
                   out.write(f"\n### {org}\n")
+                  try:
+                      result = subprocess.run(
+                          ["python3", "bridge.py", "--org", path],
+                          capture_output=True,
+                          text=True,
+                          check=True,
+                      )
+                  except subprocess.CalledProcessError as exc:
+                      failed_orgs.append(org)
+                      out.write(f"⚠️ bridge.py failed for `{path}`:\n")
+                      out.write("```\n")
+                      out.write(exc.stderr or "(no stderr output)\n")
+                      out.write("```\n")
+                      continue
                   out.write("```\n")
-                  result = subprocess.run(
-                      ["python3", "bridge.py", "--org", path],
-                      capture_output=True,
-                      text=True,
-                      check=True,
-                  )
                   out.write(result.stdout)
                   out.write("```\n")
+
+          if failed_orgs:
+              raise SystemExit(
+                  f"bridge.py failed for: {', '.join(failed_orgs)} "
+                  "(see job summary for details)"
+              )
