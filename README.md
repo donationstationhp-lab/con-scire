@@ -79,9 +79,13 @@ dispatch) and writes one stage-health summary per org found in
 
 ### Live API field mapping
 
-`--api` talks to a real Donation Station deployment's `GET /items` and
-`GET /donors`, which don't shape their JSON quite like the local
-`--data` file:
+`--api` expects the API's base URL, not a bare site domain — the
+backend mounts every route under `/api` (e.g. `--api
+https://your-deployment.example.com/api`, which `bridge.py` then
+appends `/items` and `/donors` to). The bare domain will 404.
+
+`GET /items` and `GET /donors` also don't shape their JSON quite like
+the local `--data` file:
 
 - `GET /items` doesn't embed per-item `history` (only `GET /items/:id`
   does). `item_born()` falls back to the item's `createdAt` timestamp,
