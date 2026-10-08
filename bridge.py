@@ -189,9 +189,15 @@ def item_born(item):
     """Derive the Power Connection born number from an item's intake timestamp."""
     history = item.get("history", [])
     intake = next((e for e in history if e.get("stage") == "intake"), None)
-    if not intake:
+    if intake:
+        ts = intake.get("timestamp", "")
+    else:
+        # The live Donation Station API's /items list doesn't embed per-item
+        # history (only GET /items/:id does). createdAt is set at the same
+        # moment the item enters intake, so it's an equivalent fallback.
+        ts = item.get("createdAt", "")
+    if not ts:
         return None
-    ts = intake.get("timestamp", "")
     try:
         dt = datetime.fromisoformat(ts.replace("Z", "+00:00"))
         return pc_born(dt.month, dt.day, dt.year)
@@ -213,7 +219,9 @@ def bridge_item(item, assessment):
         if d
     ]
     return {
-        "item_id": item.get("id") or item.get("itemId", "?"),
+        # itemId is the human-readable code (e.g. DS-1234); the live API's
+        # "id" is an internal UUID primary key, so prefer itemId when present.
+        "item_id": item.get("itemId") or item.get("id", "?"),
         "name": item.get("name", ""),
         "stage": stage,
         "born": b,
@@ -267,7 +275,12 @@ def bridge_org(assessment, founding_date=None):
 
 def donor_born(donor):
     """Derive the Power Connection born number from a donor's donation date."""
-    date_str = donor.get("donation_date") or donor.get("donationDate", "")
+    # lastGiftAt is what the live Donation Station API's /donors returns
+    # (the most recent gift date, computed server-side); donation_date /
+    # donationDate are the local-data-file field names.
+    date_str = (
+        donor.get("donation_date") or donor.get("donationDate") or donor.get("lastGiftAt") or ""
+    )
     if not date_str:
         return None
     try:
@@ -288,7 +301,9 @@ def bridge_donor(donor, assessment):
     return {
         "donor_id": donor.get("id") or donor.get("donorId", "?"),
         "name": donor.get("name", ""),
-        "donation_date": donor.get("donation_date") or donor.get("donationDate", ""),
+        "donation_date": (
+            donor.get("donation_date") or donor.get("donationDate") or donor.get("lastGiftAt") or ""
+        ),
         "born": b,
         "born_name": born_label(b),
         "governing_position": gov_pos,

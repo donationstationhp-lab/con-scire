@@ -77,6 +77,23 @@ ORG=...`) works directly against an ecosystem file too.
 dispatch) and writes one stage-health summary per org found in
 `assessments/` to the workflow run's job summary.
 
+### Live API field mapping
+
+`--api` talks to a real Donation Station deployment's `GET /items` and
+`GET /donors`, which don't shape their JSON quite like the local
+`--data` file:
+
+- `GET /items` doesn't embed per-item `history` (only `GET /items/:id`
+  does). `item_born()` falls back to the item's `createdAt` timestamp,
+  which is set at the same moment the item enters intake.
+- Items carry both an internal `id` (UUID primary key) and a
+  human-readable `itemId` (e.g. `DS-1234`); bridge.py displays and
+  matches on `itemId` when present.
+- `GET /donors` has no `donation_date`/`donationDate` field; it reports
+  `lastGiftAt` (the most recent gift date, server-computed), which
+  `donor_born()` falls back to. A prospect donor with no gifts yet has
+  `lastGiftAt: null`.
+
 ## Dependencies
 
 Python 3.10+ to run `bridge.py`. Tests use `pytest`. No other external

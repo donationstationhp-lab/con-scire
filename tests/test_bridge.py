@@ -175,6 +175,22 @@ class TestItemBorn(unittest.TestCase):
         item = {**_make_item(), "history": [{"stage": "intake", "timestamp": "bad"}]}
         self.assertIsNone(item_born(item))
 
+    def test_falls_back_to_created_at_when_no_history(self):
+        # The live Donation Station API's GET /items list omits history
+        # (only GET /items/:id includes it); createdAt is set at intake time.
+        item = {"id": "uuid-1", "itemId": "DS-0001", "createdAt": "2026-08-17T12:00:00.000Z"}
+        self.assertEqual(item_born(item), item_born(_make_item(ts="2026-08-17T12:00:00Z")))
+
+    def test_no_history_and_no_created_at_returns_none(self):
+        self.assertIsNone(item_born({"id": "uuid-1", "itemId": "DS-0001"}))
+
+    def test_history_intake_takes_priority_over_created_at(self):
+        item = {
+            **_make_item(ts="2026-08-17T12:00:00Z"),
+            "createdAt": "2020-01-01T00:00:00.000Z",
+        }
+        self.assertEqual(item_born(item), item_born(_make_item(ts="2026-08-17T12:00:00Z")))
+
 
 class TestBridgeItem(unittest.TestCase):
     def setUp(self):
@@ -188,6 +204,12 @@ class TestBridgeItem(unittest.TestCase):
 
     def test_item_id_matches(self):
         self.assertEqual(bridge_item(_make_item(item_id="DS-9999"), self.assessment)["item_id"], "DS-9999")
+
+    def test_prefers_item_id_over_internal_id(self):
+        # The live API's "id" is an internal UUID primary key; itemId is the
+        # human-readable DS-xxxx code and should win when both are present.
+        item = {"id": "uuid-abc-123", "itemId": "DS-4242", "stage": "intake", "createdAt": "2026-08-17T12:00:00.000Z"}
+        self.assertEqual(bridge_item(item, self.assessment)["item_id"], "DS-4242")
 
     def test_born_present_with_intake(self):
         reading = bridge_item(_make_item(ts="2026-08-17T12:00:00Z"), self.assessment)
@@ -264,6 +286,20 @@ class TestDonorBorn(unittest.TestCase):
         donor = {"id": "D-0001", "donationDate": "2026-08-17"}
         self.assertIsNotNone(donor_born(donor))
 
+    def test_falls_back_to_last_gift_at(self):
+        # The live Donation Station API's /donors returns lastGiftAt
+        # (server-computed from item createdAt timestamps), not donation_date.
+        donor = {"id": "D-0001", "name": "Live Donor", "lastGiftAt": "2026-08-17T00:00:00.000Z"}
+        self.assertIsNotNone(donor_born(donor))
+
+    def test_donation_date_takes_priority_over_last_gift_at(self):
+        donor = {"donation_date": "2026-08-17", "lastGiftAt": "2020-01-01T00:00:00.000Z"}
+        self.assertEqual(donor_born(donor), donor_born(_make_donor(donation_date="2026-08-17")))
+
+    def test_null_last_gift_at_returns_none(self):
+        # A prospect donor with no gifts yet: lastGiftAt is null, not absent.
+        self.assertIsNone(donor_born({"id": "D-0001", "lastGiftAt": None}))
+
 
 class TestBridgeDonor(unittest.TestCase):
     def setUp(self):
@@ -278,6 +314,12 @@ class TestBridgeDonor(unittest.TestCase):
     def test_donor_id_matches(self):
         reading = bridge_donor(_make_donor(donor_id="D-9999"), self.assessment)
         self.assertEqual(reading["donor_id"], "D-9999")
+
+    def test_null_last_gift_at_yields_empty_donation_date_not_none_string(self):
+        # A prospect donor (no gifts yet) has lastGiftAt: null in the live
+        # API response; the display field should be "", never the string "None".
+        reading = bridge_donor({"id": "D-0001", "name": "Prospect", "lastGiftAt": None}, self.assessment)
+        self.assertEqual(reading["donation_date"], "")
 
     def test_born_present_with_date(self):
         reading = bridge_donor(_make_donor(donation_date="2026-08-17"), self.assessment)
